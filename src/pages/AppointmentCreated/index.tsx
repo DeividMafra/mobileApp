@@ -1,10 +1,46 @@
-import React from 'react';
-import { View } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import format from 'date-fns/format';
+import React, { useCallback, useMemo } from 'react';
+import Icon from 'react-native-vector-icons/Feather';
+import {
+  Container,
+  Description,
+  OkButton,
+  OkButtonText,
+  Title,
+} from './styles';
+
+interface RouteParams {
+  date: number;
+}
 
 const AppointmentCreated: React.FC = () => {
-	return (
-		<View />
-	)
+  const { reset } = useNavigation();
+  const { params } = useRoute();
+
+  const routeParams = params as RouteParams;
+
+  const handleOkPressed = useCallback(() => {
+    reset({
+      routes: [{ name: 'Dashboard' }],
+      index: 0,
+    });
+  }, [reset]);
+
+  const formattedDate = useMemo(() => {
+    return format(routeParams.date, "cccc '-' MMMM do',' yyyy 'at' HH:mm");
+  }, [routeParams.date]);
+
+  return (
+    <Container>
+      <Icon name="check" size={80} color="#04d361" />
+      <Title> Service booked successfully!</Title>
+      <Description>{formattedDate}</Description>
+      <OkButton onPress={handleOkPressed}>
+        <OkButtonText>Ok</OkButtonText>
+      </OkButton>
+    </Container>
+  );
 };
 
 export default AppointmentCreated;
